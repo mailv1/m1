@@ -12,37 +12,8 @@ pipeline {
         sh 'bundle install'
       }
     }
-    stage ('Build') {
-      steps {
-        // build
-        sh 'bundle exec rake build'
-      }
-
-      post {
-        success {
-          // Archive the built artifacts
-          archive includes: 'pkg/*.gem'
-        }
-      }
-    }
-    stage ('Test') {
-      step {
-        // run tests with coverage
-        sh 'bundle exec rake spec'
-      }
-
-      post {
-        success {
-          // publish html
-          publishHTML target: [
-              allowMissing: false,
-              alwaysLinkToLastBuild: false,
-              keepAll: true,
-              reportDir: 'coverage',
-              reportFiles: 'index.html',
-              reportName: 'RCov Report'
-            ]
-        }
+   
+   
       }
     }
   }
