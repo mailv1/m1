@@ -5,18 +5,16 @@ pipeline {
 
   stages {
 
-  blockOn([m1]) {
+    stage('stage1') {
+      blockOn([m1]) {
         blockLevel('GLOBAL')
         scanQueueFor('ALL')
-    stage('stage1') {
       steps {
-        sh 'sleep 420 '
-        }
-      }
-
+            sh 'sleep 420 '
+	}
       } 
+  }
 
-    }
+ }
 
 }
-
