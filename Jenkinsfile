@@ -1,11 +1,12 @@
 pipeline {
   agent any
 
- // options {
+  options {
     // Only keep the 10 most recent builds
     //buildDiscarder(logRotator(numToKeepStr:'10'))
    // echo "In Options"
- // }
+   disableConcurrentBuilds()  
+  }
   stages {
     stage ('Install') {
       steps {
