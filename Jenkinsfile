@@ -13,6 +13,7 @@ pipeline {
         // install required bundles
         //sh 'bundle install'
         echo "In Install"
+        sh "sleep 420"
       }
     }
   }
