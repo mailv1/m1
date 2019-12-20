@@ -1,40 +1,55 @@
 pipeline {
-    agent any
-    stages {
-	stage('Build') {
-            steps {
-                sh 'pwd'
-		//sh 'git clone https://github.com/mailv1/cicd-pipeline-train-schedule-git.git'
-		//echo "${params.base}"
-		echo 'Running build automation'
-		sh 'pwd'
-		/*echo "WORKSPACE--> $WORKSPACE"
-		echo "JOB_NAME--> $JOB_NAME"
-		echo "BUID_NUMBER--> $BUILD_NUMBER"
-		echo "BRANCH_NAME--> $BRANCH_NAME"*/
-		sh "printenv | sort"    
-	    }
-	
-	}
-    }
-  
-    post {
-      always {
-	 /*emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGE_URL} \n\n ------- \n${BUILD_URL, maxLines=100, escapeHtml=false}', 
-                    to: "jenkins99019@gmail.com", 
-                    subject: 'Build failed in Jenkins: $BUILD_NUMBER'*/
-	 mail to: 'jenkins99019@gmail.com',
-             subject: "Passed Pipeline:",
-             body: "Some result"
-	      
-	
-         
-       
-	//sh 'rm -rf cicd-pipeline-train-schedule-git'
-	echo "post run"
-	//junit '/var/jenkins_home/*/*.xml'
-	//new comment
-      }
-   }
-}
 
+    agent any
+
+    stages {
+
+        stage("Interactive_Input") {
+            steps {
+                script {
+
+                    // Variables for input
+                    def inputConfig
+                    def inputTest
+
+                    // Get the input
+                    def userInput = input(
+                            id: 'userInput', message: 'Enter the Testbed information'\
+,
+                            parameters: [
+
+                                    string(defaultValue: '130.1.1.1',
+                                            description: 'IP Address of Controller',
+                                            name: 'IP Address of Controller'),
+                                    string(defaultValue: 'TGW:FQDN:CLOUDWAN',
+                                            description: 'Tests',
+                                            name: 'Tests'),
+                                    string(defaultValue: 'Tests for User1....',
+                                            description: 'Description of Test Log',
+                                            name: 'Description'),
+                                    choice(name: 'Tests to Run', choices: "FQDN\nFQDN\
+ TWQ\nTGW", description: 'Which Tests to Run?'),
+                                    checkbox(name: 'Tests to Run', choices: "FQDN\nTG\
+W\nXYZ", description: 'Which Tests to Run?')
+
+                            ])
+
+                    // Save to variables. Default to empty string if not found.
+                    inputConfig = userInput.Config?:''
+                    inputTest = userInput.Test?:''
+
+                    // Echo to console
+                    echo("IQA Sheet Path: ${inputConfig}")
+                    echo("Test Info file path: ${inputTest}")
+
+                    // Write to file
+                    writeFile file: "inputData.txt", text: "Config=${inputConfig}\r\n\
+Test=${inputTest}"
+
+                    // Archive the file (or whatever you want to do with it)
+                    archiveArtifacts 'inputData.txt'
+                }
+            }
+        }
+    }
+}
